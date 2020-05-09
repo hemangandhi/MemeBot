@@ -22,6 +22,14 @@ reddit = praw.Reddit(client_id=redditID, client_secret=reddit_secret,
 memes = ['memes', 'dankmemes', 'MemeEconomy', '2meirl4meirl', 'me_irl', 'meme', 
     'surrealmemes', 'funny', 'trippinthroughtime', 'starterpacks', "ProgrammerHumor"]
 
+def subreddit_or_none(temp: str):
+    sub = reddit.subreddit(temp)
+    try:
+        sub._fetch()
+    except:
+        return None
+    return sub
+
 @bot.event
 async def on_ready():
     print('Logged in as')
@@ -38,32 +46,21 @@ async def meme(ctx):
     submission = sub.random()
     await ctx.send(submission.url + " from r/" + sub.display_name)
 
-def subreddit_validate(temp: str):
-    sub_exists = True
-    sub = reddit.subreddit(temp)
-    try:
-        sub._fetch()
-    except:
-        sub_exists = False
-    return sub_exists
-        
-
 @bot.command(description="Sends a meme from the specified subreddit.")
 async def mfrom(ctx, newSub: str):
-    if (subreddit_validate(newSub)):
-        sub = reddit.subreddit(newSub)
-        if (sub.over18 == True):
-            await ctx.send("NSFW subreddit detected. Nice try :)")
-        else:
-            submission = sub.random()
-            await ctx.send(submission.url + " from r/" + sub.display_name)
+    sub = subreddit_or_none(newSub)
+    if sub and sub.over18:
+        await ctx.send("NSFW subreddit detected. Nice try :)")
+    elif sub:
+        submission = sub.random()
+        await ctx.send(submission.url + " from r/" + sub.display_name)
     else:
         await ctx.send("Subreddit does not exist. Please enter an existing subreddit & make sure your capitalization is correct.")
 
 @bot.command(description="Information about MemeBot.")
 async def info(ctx):
     await ctx.send(description)
-    
+
 @bot.command(description="Invite the bot to your own server.")
 async def invite(ctx):
     await ctx.send("<https://discordapp.com/oauth2/authorize?client_id=684952708830330910&permissions=68608&scope=bot>")
@@ -80,7 +77,8 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-"""@bot.command()
+"""
+@bot.command()
 async def memes(ctx, num: int):
     xNum = num
     for x in range (xNum):
@@ -92,6 +90,7 @@ async def memeOfTheHour(ctx):
     if datetime.time().minute == 0:
         sub = reddit.subreddit(random.choice(memes))
         submission = sub.random()
-        await ctx.send('Meme Of The Hour: ' + submission.url + " from r/" + sub.display_name)"""
+        await ctx.send('Meme Of The Hour: ' + submission.url + " from r/" + sub.display_name)
+"""
 
 bot.run(token)
