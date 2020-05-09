@@ -7,7 +7,11 @@ import time
 import os
 from dotenv import load_dotenv
 
-description = 'A bot solely for memes, created by Srija (<@!144266578408636417>). \nm!meme: Sends a random meme from Reddit. \nm!mfrom <subreddit>: Sends a meme from the specified subreddit. \nm!invite: Invite me to your own server. \nm!servers: See how many servers I\'m in.'
+description = """A bot solely for memes, created by Srija (<@!144266578408636417>).
+m!meme: Sends a random meme from Reddit.
+m!mfrom <subreddit>: Sends a meme from the specified subreddit.
+m!invite: Invite me to your own server.
+m!servers: See how many servers I'm in."""
 bot = commands.Bot(command_prefix='m!', description=description)
 
 load_dotenv()
@@ -16,10 +20,10 @@ redditID = os.getenv('REDDIT_ID')
 reddit_secret = os.getenv('REDDIT_SECRET')
 reddit_refresh = os.getenv('REDDIT_REFRESH')
 
-reddit = praw.Reddit(client_id=redditID, client_secret=reddit_secret, 
+reddit = praw.Reddit(client_id=redditID, client_secret=reddit_secret,
     refresh_token = reddit_refresh, user_agent='MemeBot')
 
-memes = ['memes', 'dankmemes', 'MemeEconomy', '2meirl4meirl', 'me_irl', 'meme', 
+memes = ['memes', 'dankmemes', 'MemeEconomy', '2meirl4meirl', 'me_irl', 'meme',
     'surrealmemes', 'funny', 'trippinthroughtime', 'starterpacks', "ProgrammerHumor"]
 
 def subreddit_or_none(temp: str):
